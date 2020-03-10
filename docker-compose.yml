@@ -1,0 +1,33 @@
+version: "3.7"
+services:
+  shadowsocks:
+    image: shadowsocks/shadowsocks-libev:${SHADOWSOCKS_VERSION}
+    ports:
+      - "${SHADOWSOCKS_PORT}:8388"
+    environment:
+      - METHOD=${SHADOWSOCKS_METHOD}
+      - PASSWORD=${SHADOWSOCKS_PWD}
+      - DNS_ADDRS=${SHADOWSOCKS_DNS}
+    networks:
+      - stefein
+    restart: always
+
+  jls:
+    image: crazymax/jetbrains-license-server:${JLS_VERSION}
+    ports:
+      - target: 8000
+        published: 8000
+        protocol: tcp
+    volumes:
+      - "stefein:/data"
+    networks:
+      - stefein
+    env_file:
+      - "./jls/jls.env"
+    restart: always
+
+networks:
+  stefein:
+
+volumes:
+  stefein:
